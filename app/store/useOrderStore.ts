@@ -13,6 +13,7 @@ interface OrderState {
   toggleEyelets: () => void;
   getPrice: () => number;
   generateDeepLink: () => string;
+  generateOrderPayload: () => any;
 }
 
 export const useOrderStore = create<OrderState>((set, get) => ({
@@ -34,17 +35,43 @@ export const useOrderStore = create<OrderState>((set, get) => ({
     const eyeletPrice = eyelets ? (width + height) * 0.2 * 10 : 0; // Rough perimeter logic
     return Math.round((basePrice + eyeletPrice) * quantity);
   },
+  generateOrderPayload: () => {
+    const { width, height, material, eyelets, quantity, getPrice } = get();
+
+    // User Agent Logic
+    let user_agent = "unknown";
+    if (typeof window !== 'undefined') {
+      user_agent = window.innerWidth < 768 ? "mobile" : "desktop";
+    }
+
+    const payload = {
+      order_id: crypto.randomUUID(),
+      product_type: "banner_wide",
+      specs: {
+        width_cm: width,
+        height_cm: height,
+        material: material === 'glossy' ? 'glossy_frontlit' : 'matte_frontlit',
+        post_processing: eyelets ? ["eyelets_30cm"] : []
+      },
+      quantity: quantity,
+      estimated_price_uah: getPrice(),
+      client_meta: {
+        source: "web_configurator",
+        user_agent: user_agent
+      }
+    };
+    return payload;
+  },
   generateDeepLink: () => {
     const state = get();
-    const orderData = {
-      product: "Banner",
-      width: state.width,
-      height: state.height,
-      material: state.material,
-      eyelets: state.eyelets,
-      quantity: state.quantity
-    };
-    console.log("Serialized Order Data:", JSON.stringify(orderData, null, 2));
+    // Note: generateOrderPayload logic is duplicated or this should call it?
+    // The previous implementation was logging a different structure.
+    // The requirement says "When the user clicks the main CTA button... log this specific JSON structure".
+    // It doesn't explicitly say generateDeepLink must change its internal logic yet, but the plan says I need to update handleSend to use generateOrderPayload.
+    // I will keep generateDeepLink as is for now, but update it to be minimal since the payload generation is separate.
+    // Or I can use generateOrderPayload here too if needed.
+    // For now, I leave generateDeepLink mostly as legacy or simplified.
+
     const mockId = Math.random().toString(36).substring(7);
     return `tg://resolve?domain=PolygraphyBot&start=order_${mockId}`;
   }
