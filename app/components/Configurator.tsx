@@ -21,9 +21,9 @@ function BannerModel() {
       <mesh ref={meshRef}>
         <planeGeometry args={[w, h, 32, 32]} />
         <meshStandardMaterial
-          color={material === 'matte' ? '#f0f0f0' : '#ffffff'}
-          roughness={material === 'matte' ? 0.9 : 0.2}
-          metalness={material === 'glossy' ? 0.3 : 0.0}
+          color={'#ffffff'}
+          roughness={material === 'matte' ? 0.8 : 0.2}
+          metalness={0.05}
           side={THREE.DoubleSide}
         />
       </mesh>
@@ -64,10 +64,12 @@ export default function Configurator() {
     quantity, setQuantity,
     material, setMaterial,
     eyelets, toggleEyelets,
-    getPrice, generateDeepLink
+    getPrice, generateDeepLink, generateOrderPayload
   } = useOrderStore();
 
   const handleSend = () => {
+    const payload = generateOrderPayload();
+    console.log(JSON.stringify(payload, null, 2));
     const link = generateDeepLink();
     window.open(link, '_blank');
   };
@@ -84,7 +86,7 @@ export default function Configurator() {
         </Canvas>
 
         <div className="absolute bottom-4 left-4 bg-white/80 p-2 rounded text-xs text-forest-green font-mono">
-          Interactive Preview
+          3D Предпросмотр
         </div>
       </div>
 
@@ -94,12 +96,12 @@ export default function Configurator() {
 
           <div className="space-y-4">
             <h2 className="text-2xl font-bold text-forest-green flex items-center gap-2">
-              <Maximize className="text-electric-lime" /> Dimensions
+              <Maximize className="text-electric-lime" /> Размеры (см)
             </h2>
 
             <div className="space-y-2">
               <label className="flex justify-between text-sm font-bold text-forest-green">
-                Width (cm) <span>{width}</span>
+                Ширина <span>{width}</span>
               </label>
               <input
                 type="range" min="50" max="500" value={width}
@@ -110,7 +112,7 @@ export default function Configurator() {
 
             <div className="space-y-2">
               <label className="flex justify-between text-sm font-bold text-forest-green">
-                Height (cm) <span>{height}</span>
+                Высота <span>{height}</span>
               </label>
               <input
                 type="range" min="30" max="300" value={height}
@@ -122,7 +124,7 @@ export default function Configurator() {
 
           <div className="space-y-4">
             <h2 className="text-2xl font-bold text-forest-green flex items-center gap-2">
-              <Layers className="text-electric-lime" /> Material & Finish
+              <Layers className="text-electric-lime" /> Материал
             </h2>
 
             <div className="flex gap-4">
@@ -134,7 +136,7 @@ export default function Configurator() {
                     : 'border-gray-300 text-gray-500 hover:border-forest-green'
                 }`}
               >
-                Matte
+                Матовый
               </button>
               <button
                 onClick={() => setMaterial('glossy')}
@@ -144,12 +146,12 @@ export default function Configurator() {
                     : 'border-gray-300 text-gray-500 hover:border-electric-lime'
                 }`}
               >
-                Glossy
+                Глянцевый
               </button>
             </div>
 
             <div className="flex items-center justify-between p-4 border border-forest-green/10 rounded bg-white">
-              <span className="font-bold text-forest-green">Eyelets (Люверсы)</span>
+              <span className="font-bold text-forest-green">Люверсы</span>
               <button
                 onClick={toggleEyelets}
                 className={`w-12 h-6 rounded-full p-1 transition-colors ${eyelets ? 'bg-electric-lime' : 'bg-gray-300'}`}
@@ -162,7 +164,7 @@ export default function Configurator() {
           <div className="space-y-4 pt-8 border-t border-dashed border-forest-green/20">
             <div className="flex justify-between items-end">
               <div className="text-sm text-gray-500">
-                Quantity:
+                Тираж
                 <input
                   type="number" value={quantity} onChange={(e) => setQuantity(Math.max(1, Number(e.target.value)))}
                   className="ml-2 w-16 p-1 border border-forest-green/20 rounded text-center font-bold text-forest-green"
@@ -179,7 +181,7 @@ export default function Configurator() {
               onClick={handleSend}
               className="w-full py-4 bg-electric-lime text-forest-green text-xl font-bold uppercase tracking-wider hover:shadow-[0_0_20px_rgba(204,255,0,0.5)] transition-shadow border-2 border-forest-green"
             >
-              Calculate & Send to Telegram
+              РАССЧИТАТЬ И ОТПРАВИТЬ В TELEGRAM
             </motion.button>
           </div>
 

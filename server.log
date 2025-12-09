@@ -6,7 +6,15 @@
   - Local:        http://localhost:3000
 
  ✓ Starting...
- ✓ Ready in 1677ms
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+ ✓ Ready in 1732ms
  ○ Compiling / ...
- ✓ Compiled / in 18.3s (2346 modules)
- GET / 200 in 19192ms
+ ✓ Compiled / in 16.3s (2346 modules)
+ GET / 200 in 17619ms
+ ✓ Compiled in 987ms (2346 modules)
+ GET / 200 in 256ms
+ GET / 200 in 64ms
